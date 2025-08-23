@@ -1,71 +1,134 @@
 /**
  * For usage, visit Chart.js docs https://www.chartjs.org/docs/latest/
  */
-const lineConfig = {
-  type: 'line',
-  data: {
-    labels: ['Hito 1', 'Hito 2', 'Hito 3', 'Hito 4', 'Hito 5', 'Hito 6', 'Hito 7'],
-    datasets: [
-      {
-        label: 'Serie 1',
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: '#0694a2',
-        borderColor: '#0694a2',
-        data: [43, 48, 40, 54, 67, 73, 70],
-        fill: false,
-      },
-      {
-        label: 'Serie 2',
-        fill: false,
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: '#7e3af2',
-        borderColor: '#7e3af2',
-        data: [24, 50, 64, 74, 52, 51, 65],
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    /**
-     * Default legends are ugly and impossible to style.
-     * See examples in charts.html to add your own legends
-     *  */
-    legend: {
-      display: false,
-    },
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true,
-    },
-    scales: {
-      x: {
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Month',
-        },
-      },
-      y: {
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Value',
-        },
-      },
-    },
-  },
+
+// Función para obtener datos del gráfico desde el backend
+function getChartData() {
+  // Obtener los datos del gráfico desde el contexto de Django
+  // Estos datos se pasan desde la vista
+  const chartData = window.chartData || [];
+  
+  if (chartData.length === 0) {
+    return {
+      labels: [],
+      data: []
+    };
+  }
+  
+  const labels = chartData.map(item => `Usuario ${item.user_id}`);
+  const data = chartData.map(item => item.avg_title_length);
+  
+  return { labels, data };
 }
 
-// change this to the id of your chart element in HMTL
-const lineCtx = document.getElementById('line')
-window.myLine = new Chart(lineCtx, lineConfig)
+// Función para crear el gráfico
+function createChart() {
+  const chartInfo = getChartData();
+  
+  // Verificar que tenemos datos válidos
+  if (chartInfo.labels.length === 0 || chartInfo.data.length === 0) {
+    return;
+  }
+  
+  const lineConfig = {
+    type: 'line',
+    data: {
+      labels: chartInfo.labels,
+      datasets: [
+        {
+          label: 'Promedio de Caracteres en Título',
+          /**
+           * These colors come from Tailwind CSS palette
+           * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
+           */
+          backgroundColor: '#0694a2',
+          borderColor: '#0694a2',
+          data: chartInfo.data,
+          fill: false,
+          tension: 0.4,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      /**
+       * Default legends are ugly and impossible to style.
+       * See examples in charts.html to add your own legends
+       *  */
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          fontColor: '#6b7280',
+          fontSize: 12,
+          usePointStyle: true,
+        }
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label: function(context) {
+            return `Promedio: ${context.parsed.y} caracteres`;
+          }
+        }
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true,
+      },
+      scales: {
+        x: {
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'ID del Usuario',
+            fontColor: '#6b7280',
+            fontSize: 14,
+          },
+          ticks: {
+            fontColor: '#6b7280',
+            fontSize: 12,
+          }
+        },
+        y: {
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Promedio de Caracteres en Título',
+            fontColor: '#6b7280',
+            fontSize: 14,
+          },
+          ticks: {
+            fontColor: '#6b7280',
+            fontSize: 12,
+            callback: function(value) {
+              return value + ' chars';
+            }
+          }
+        },
+      },
+    },
+  }
+
+  // change this to the id of your chart element in HMTL
+  const lineCtx = document.getElementById('line')
+  if (lineCtx) {
+    // Destruir gráfico existente si existe
+    if (window.myLine) {
+      window.myLine.destroy();
+    }
+    window.myLine = new Chart(lineCtx, lineConfig)
+  }
+}
+
+// Esperar a que la página esté completamente cargada
+document.addEventListener('DOMContentLoaded', function() {
+  // Esperar un poco más para asegurar que los datos estén disponibles
+  setTimeout(createChart, 200);
+});
+
+// También crear el gráfico cuando la ventana esté completamente cargada
+window.addEventListener('load', createChart);

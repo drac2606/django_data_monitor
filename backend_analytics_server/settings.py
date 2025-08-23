@@ -27,11 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-c2d*=@f22_e&c63wj*t5#0^ri382j0b1qo+2+oju1c0!-un5=e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CSRF_TRUSTED_ORIGINS = [
-  "https://localhost:8000",
-  "http://127.0.0.1:8000"
+    "https://*.up.railway.app",
+    "https://localhost:8000",
+    "http://127.0.0.1:8000"
 ]
 
 ALLOWED_HOSTS = [
@@ -54,12 +55,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Agregar WhiteNoise al middleware (debe ir después de SecurityMiddleware)
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',   
 ]
 
 ROOT_URLCONF = 'backend_analytics_server.urls'
@@ -133,6 +135,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / 'assets'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
@@ -143,7 +150,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # API Configuration
-API_URL = 'https://drac2606.pythonanywhere.com/landing/api/index'  # URL de la Landing API
+# API_URL = 'https://drac2606.pythonanywhere.com/landing/api/index'  # URL de la Landing API
+API_URL = 'https://drac2606.pythonanywhere.com/landing/api/index'
 
 # Fallo: acceso sin autenticación
 LOGIN_URL = '/login/'
