@@ -43,12 +43,12 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            Indicador 2
+          Promedio de caracteres por título
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
 
             <!-- START - valor del indicador 2 -->
-            Valor 2
+            {{ avg_title_length }}
             <!-- END - valor del indicador 2 -->
 
           </p>
@@ -66,12 +66,12 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            Indicador 3
+            Número de posts con títulos largos (>50 caracteres)
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
 
             <!-- START - valor del indicador 3 -->
-            Valor 3
+            {{ long_titles }}
             <!-- END - valor del indicador 3 -->
 
           </p>
@@ -89,12 +89,12 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            Indicador 4
+            Usuario con más posts (basado en userId)
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
 
             <!-- START - valor del indicador 4 -->
-            Valor 4
+            {{ top_user_posts }} posts
             <!-- END - valor del indicador 4 -->
 
           </p>
@@ -113,35 +113,72 @@
             <thead>
               <tr
                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                <th class="px-4 py-3">Columna 1</th>
-                <th class="px-4 py-3">Columna 2</th>
+                <th class="px-4 py-3">ID Usuario</th>
+                <th class="px-4 py-3">ID Post</th>
+                <th class="px-4 py-3">Título</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 
               <!-- START - respuestas -->
+              {% for row in table_data %}
               <tr class="text-gray-700 dark:text-gray-400">
                 <td class="px-4 py-3 text-sm">
-                  <!-- START - fila.valor1 -->
-                  fila.valor1
-                  <!-- END - fila.valor1 -->
+                  {{ row.user_id }}
                 </td>
                 <td class="px-4 py-3 text-sm">
-                  <!-- START - fila.valor2 -->
-                  fila.valor2
-                  <!-- END - fila.valor2 -->
+                  {{ row.post_id }}
+                </td>
+                <td class="px-4 py-3 text-sm">
+                  {{ row.title }}
                 </td>
               </tr>
+              {% endfor %}
               <!-- END - respuestas -->
 
             </tbody>
           </table>
         </div>
+        
+        <!-- Controles de paginación -->
+        {% if page_obj.has_other_pages %}
+        <div class="px-4 py-3 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
+              Mostrando {{ page_obj.start_index }} a {{ page_obj.end_index }} de {{ page_obj.paginator.count }} resultados
+            </div>
+            <div class="flex space-x-2">
+              {% if page_obj.has_previous %}
+                <a href="?page=1" class="px-3 py-1 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                  Primera
+                </a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                  Anterior
+                </a>
+              {% endif %}
+              
+              <span class="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+              </span>
+              
+              {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                  Siguiente
+                </a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                  Última
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        
         <div
           class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
           <span class="flex items-center col-span-3">
             <!-- START - # total de respuestas -->
-            XXX
+            {{ total_responses }}
             <!-- END - # total de respuestas -->
             respuestas
           </span>
@@ -153,7 +190,7 @@
       <div class="row-span-1 grid gap-6 mb-8 md:grid-cols-12">
         <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
           <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Título del gráfico
+            Promedio de Caracteres en Título por Usuario
           </h4>
           <canvas id="line"></canvas>
         </div>
@@ -164,3 +201,12 @@
 
   </div>
 </main>
+
+<!-- Datos del gráfico pasados desde Django -->
+{{ chart_data|json_script:"chart-data" }}
+
+<!-- Script para pasar datos del gráfico al JavaScript -->
+<script>
+  // Pasar datos del gráfico desde Django al JavaScript
+  window.chartData = JSON.parse(document.getElementById('chart-data').textContent);
+</script>
