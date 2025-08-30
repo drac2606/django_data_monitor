@@ -9,16 +9,34 @@ from django.core.paginator import Paginator
 @permission_required('dashboard.index_viewer', raise_exception=True)
 def index(request):
     response = requests.get(settings.API_URL)  # URL de la API
-    reservations = response.json()  # Convertir la respuesta a JSON
+    reservations_data = response.json()  # Convertir la respuesta a JSON
+    
+    # Convertir el objeto de reservas a una lista
+    # La API devuelve un objeto donde las claves son los IDs
+    reservations = []
+    for reservation_id, reservation in reservations_data.items():
+        reservation['id'] = reservation_id  # Agregar el ID como campo
+        reservations.append(reservation)
     
     #Número total de reservas
     total_reservations = len(reservations)
     
     #Cantidad de clientes diferentes (usando "name")
-    unique_clients = len(set(reservation.get('name', '') for reservation in reservations))
+    unique_clients = len(set(reservation.get('name', '') for reservation in reservations if reservation.get('name')))
     
     #Promedio de personas por mesa (usando "people")
-    total_people = sum(reservation.get('people', 0) for reservation in reservations)
+    total_people = 0
+    for reservation in reservations:
+        people_str = reservation.get('people', '0')
+        # Manejar casos como "5+" o "2"
+        if isinstance(people_str, str):
+            people_str = people_str.replace('+', '')
+        try:
+            people_count = int(people_str)
+            total_people += people_count
+        except (ValueError, TypeError):
+            continue
+    
     avg_people_per_table = round(total_people / total_reservations, 1) if total_reservations > 0 else 0
     
     #Usuario con mayor cantidad de reservas
@@ -49,12 +67,20 @@ def index(request):
     date_people_stats = {}
     for reservation in reservations:
         date = reservation.get('date', '')
-        people = reservation.get('people', 0)
+        people_str = reservation.get('people', '0')
+        
+        # Manejar casos como "5+" o "2"
+        if isinstance(people_str, str):
+            people_str = people_str.replace('+', '')
+        try:
+            people_count = int(people_str)
+        except (ValueError, TypeError):
+            people_count = 0
         
         if date not in date_people_stats:
             date_people_stats[date] = 0
         
-        date_people_stats[date] += people
+        date_people_stats[date] += people_count
     
     # Ordenar por fecha para el gráfico
     chart_data = []
