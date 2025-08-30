@@ -30,7 +30,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 #'https://jsonplaceholder.typicode.com/posts'
-API_URL = "https://drac2606.pythonanywhere.com/landing/api/index"
+API_URL = "https://drac2606.pythonanywhere.com/landing/api/index/?format=json"
 # Application definition
 
 INSTALLED_APPS = [
@@ -142,8 +142,7 @@ CSRF_TRUSTED_ORIGINS = [
   "http://127.0.0.1:8000"
 ]
 
-ALLOWED_HOSTS = ["*",
-  ".up.railway.app",
+ALLOWED_HOSTS = [".up.railway.app",
 ]
 
 # Fallo: acceso sin autenticación
