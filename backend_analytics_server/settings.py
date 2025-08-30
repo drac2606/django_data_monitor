@@ -29,8 +29,8 @@ SECRET_KEY = "django-insecure-pnvx9m-pnufnq*8$rtnw7-kt!af$%&ezy2@_$^(0d1!wbxmnra
 DEBUG = False
 
 ALLOWED_HOSTS = []
-
-API_URL = 'https://jsonplaceholder.typicode.com/posts'
+#'https://jsonplaceholder.typicode.com/posts'
+API_URL = "https://drac2606.pythonanywhere.com/landing/api/index"
 # Application definition
 
 INSTALLED_APPS = [
@@ -142,7 +142,7 @@ CSRF_TRUSTED_ORIGINS = [
   "http://127.0.0.1:8000"
 ]
 
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = ["*",
   ".up.railway.app",
 ]
 

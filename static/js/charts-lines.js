@@ -15,8 +15,8 @@ function getChartData() {
     };
   }
   
-  const labels = chartData.map(item => `Usuario ${item.user_id}`);
-  const data = chartData.map(item => item.avg_title_length);
+  const labels = chartData.map(item => item.date);
+  const data = chartData.map(item => item.total_people);
   
   return { labels, data };
 }
@@ -36,7 +36,7 @@ function createChart() {
       labels: chartInfo.labels,
       datasets: [
         {
-          label: 'Promedio de Caracteres en Título',
+          label: 'Cantidad de Personas por Día',
           /**
            * These colors come from Tailwind CSS palette
            * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
@@ -71,7 +71,7 @@ function createChart() {
         intersect: false,
         callbacks: {
           label: function(context) {
-            return `Promedio: ${context.parsed.y} caracteres`;
+            return `Personas: ${context.parsed.y}`;
           }
         }
       },
@@ -84,7 +84,7 @@ function createChart() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'ID del Usuario',
+            labelString: 'Fecha',
             fontColor: '#6b7280',
             fontSize: 14,
           },
@@ -97,7 +97,7 @@ function createChart() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Promedio de Caracteres en Título',
+            labelString: 'Cantidad de Personas',
             fontColor: '#6b7280',
             fontSize: 14,
           },
@@ -105,7 +105,7 @@ function createChart() {
             fontColor: '#6b7280',
             fontSize: 12,
             callback: function(value) {
-              return value + ' chars';
+              return value + ' personas';
             }
           }
         },

@@ -22,11 +22,11 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            Número total de respuestas
+            Número total de reservas
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
             <!-- START - valor del indicador 1 -->
-            {{ total_responses }}
+            {{ total_reservations }}
             <!-- END - valor del indicador 1 -->
           </p>
         </div>
@@ -43,12 +43,12 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-          Promedio de caracteres por título
+            Cantidad de clientes
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
 
             <!-- START - valor del indicador 2 -->
-            {{ avg_title_length }}
+            {{ unique_clients }}
             <!-- END - valor del indicador 2 -->
 
           </p>
@@ -66,12 +66,12 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            Número de posts con títulos largos (>50 caracteres)
+            Promedio de personas por mesa
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
 
             <!-- START - valor del indicador 3 -->
-            {{ long_titles }}
+            {{ avg_people_per_table }}
             <!-- END - valor del indicador 3 -->
 
           </p>
@@ -89,12 +89,12 @@
         </div>
         <div>
           <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            Usuario con más posts (basado en userId)
+            Cliente con más reservas
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
 
             <!-- START - valor del indicador 4 -->
-            {{ top_user_posts }} posts
+            {{ top_client_name }}. {{ top_client_reservations }} reservas.
             <!-- END - valor del indicador 4 -->
 
           </p>
@@ -113,9 +113,9 @@
             <thead>
               <tr
                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                <th class="px-4 py-3">ID Usuario</th>
-                <th class="px-4 py-3">ID Post</th>
-                <th class="px-4 py-3">Título</th>
+                <th class="px-4 py-3">ID Reserva</th>
+                <th class="px-4 py-3">Número de Personas</th>
+                <th class="px-4 py-3">Fecha</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
@@ -124,13 +124,13 @@
               {% for row in table_data %}
               <tr class="text-gray-700 dark:text-gray-400">
                 <td class="px-4 py-3 text-sm">
-                  {{ row.user_id }}
+                  {{ row.reservation_id }}
                 </td>
                 <td class="px-4 py-3 text-sm">
-                  {{ row.post_id }}
+                  {{ row.people }}
                 </td>
                 <td class="px-4 py-3 text-sm">
-                  {{ row.title }}
+                  {{ row.date }}
                 </td>
               </tr>
               {% endfor %}
@@ -177,10 +177,10 @@
         <div
           class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
           <span class="flex items-center col-span-3">
-            <!-- START - # total de respuestas -->
-            {{ total_responses }}
-            <!-- END - # total de respuestas -->
-            respuestas
+            <!-- START - # total de reservas -->
+            {{ total_reservations }}
+            <!-- END - # total de reservas -->
+            reservas
           </span>
         </div>
       </div>
@@ -190,7 +190,7 @@
       <div class="row-span-1 grid gap-6 mb-8 md:grid-cols-12">
         <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
           <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Promedio de Caracteres en Título por Usuario
+            Cantidad de Personas por Día
           </h4>
           <canvas id="line"></canvas>
         </div>
